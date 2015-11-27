@@ -2844,6 +2844,8 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 	if (options.tags_ecc_overridden)
 		param->no_tags_ecc = !options.tags_ecc_on;
 
+	param->no_tags_ecc = 1;
+
 	param->empty_lost_n_found = 1;
 	param->refresh_period = 500;
 	param->disable_summary = options.disable_summary;

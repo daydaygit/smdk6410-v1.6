@@ -193,6 +193,8 @@ int nandmtd2_read_chunk_tags(struct yaffs_dev *dev, int nand_chunk,
 	    && tags->ecc_result == YAFFS_ECC_RESULT_NO_ERROR) {
 		tags->ecc_result = YAFFS_ECC_RESULT_FIXED;
 		dev->n_ecc_fixed++;
+
+		retval = 0;
 	}
 	if (retval == 0)
 		return YAFFS_OK;
