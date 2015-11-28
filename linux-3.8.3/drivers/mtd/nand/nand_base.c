@@ -3490,8 +3490,8 @@ int nand_scan_tail(struct mtd_info *mtd)
 
 		if (mtd->writesize >= chip->ecc.size) {
 			if (!chip->ecc.strength) {
-				pr_warn("Driver must set ecc.strength when using hardware ECC\n");
-				BUG();
+				pr_warn("Driver must set ecc.strength when using hardware ECC ~~~\n");
+				// BUG();
 			}
 			break;
 		}
@@ -3499,7 +3499,6 @@ int nand_scan_tail(struct mtd_info *mtd)
 			   "%d byte page size, fallback to SW ECC\n",
 			   chip->ecc.size, mtd->writesize);
 		chip->ecc.mode = NAND_ECC_SOFT;
-
 	case NAND_ECC_SOFT:
 		chip->ecc.calculate = nand_calculate_ecc;
 		chip->ecc.correct = nand_correct_data;

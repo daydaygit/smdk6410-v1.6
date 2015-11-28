@@ -63,6 +63,8 @@ struct mtd_part_parser_data {
 	struct device_node *of_node;
 };
 
+int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
+int del_mtd_partitions(struct mtd_info *);
 
 /*
  * Functions dealing with the various ways of partitioning the space

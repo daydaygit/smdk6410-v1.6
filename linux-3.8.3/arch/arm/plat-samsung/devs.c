@@ -961,7 +961,7 @@ static struct resource s3c_nand_resource[] = {
 };
 
 struct platform_device s3c_device_nand = {
-	.name		= "s3c2410-nand",
+	.name		= "s3c6410-nand",
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(s3c_nand_resource),
 	.resource	= s3c_nand_resource,

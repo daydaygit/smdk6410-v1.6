@@ -866,7 +866,8 @@ static void yaffs_evict_inode(struct inode *inode)
 	if (!inode->i_nlink && !is_bad_inode(inode))
 		deleteme = 1;
 	truncate_inode_pages(&inode->i_data, 0);
-	end_writeback(inode);
+//	end_writeback(inode);
+	clear_inode(inode);
 
 	if (deleteme && obj) {
 		dev = obj->my_dev;
@@ -2504,8 +2505,12 @@ static void yaffs_mtd_put_super(struct super_block *sb)
 {
 	struct mtd_info *mtd = yaffs_dev_to_mtd(yaffs_super_to_dev(sb));
 
+/*
 	if (mtd->sync)
 		mtd->sync(mtd);
+*/
+	if (mtd->_sync)
+		mtd->_sync(mtd);
 
 	put_mtd_device(mtd);
 }
@@ -2643,16 +2648,18 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 	else if (!yaffs_devname(sb, devname_buf))
 		printk(KERN_INFO "yaffs: devname is NULL\n");
 	else
-		printk(KERN_INFO "yaffs: dev is %d name is \"%s\" %s\n",
+		printk(KERN_INFO "yaffs: dev is %d name is \"%s\" === %s ===\n",
 		       sb->s_dev,
-		       yaffs_devname(sb, devname_buf), read_only ? "ro" : "rw");
+		       yaffs_devname(sb, devname_buf), read_only ? "RO" : "RW");
 
 	if (!data_str)
 		data_str = "";
 
 	printk(KERN_INFO "yaffs: passed flags \"%s\"\n", data_str);
 
+	printk(KERN_INFO "Now, memset 0 ........\n");
 	memset(&options, 0, sizeof(options));
+	printk(KERN_INFO "Now, memset 0 done.\n");
 
 	if (yaffs_parse_options(&options, data_str)) {
 		/* Option parsing failed */
@@ -2692,13 +2699,13 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 		return NULL;
 	}
 
-	yaffs_trace(YAFFS_TRACE_OS, " erase %p", mtd->erase);
-	yaffs_trace(YAFFS_TRACE_OS, " read %p", mtd->read);
-	yaffs_trace(YAFFS_TRACE_OS, " write %p", mtd->write);
-	yaffs_trace(YAFFS_TRACE_OS, " readoob %p", mtd->read_oob);
-	yaffs_trace(YAFFS_TRACE_OS, " writeoob %p", mtd->write_oob);
-	yaffs_trace(YAFFS_TRACE_OS, " block_isbad %p", mtd->block_isbad);
-	yaffs_trace(YAFFS_TRACE_OS, " block_markbad %p", mtd->block_markbad);
+	yaffs_trace(YAFFS_TRACE_OS, " erase %p", mtd->_erase);
+	yaffs_trace(YAFFS_TRACE_OS, " read %p", mtd->_read);
+	yaffs_trace(YAFFS_TRACE_OS, " write %p", mtd->_write);
+	yaffs_trace(YAFFS_TRACE_OS, " readoob %p", mtd->_read_oob);
+	yaffs_trace(YAFFS_TRACE_OS, " writeoob %p", mtd->_write_oob);
+	yaffs_trace(YAFFS_TRACE_OS, " block_isbad %p", mtd->_block_isbad);
+	yaffs_trace(YAFFS_TRACE_OS, " block_markbad %p", mtd->_block_markbad);
 	yaffs_trace(YAFFS_TRACE_OS, " %s %d", WRITE_SIZE_STR, WRITE_SIZE(mtd));
 	yaffs_trace(YAFFS_TRACE_OS, " oobsize %d", mtd->oobsize);
 	yaffs_trace(YAFFS_TRACE_OS, " erasesize %d", mtd->erasesize);
@@ -2722,14 +2729,14 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 
 	if (yaffs_version == 2) {
 		/* Check for version 2 style functions */
-		if (!mtd->erase ||
-		    !mtd->block_isbad ||
-		    !mtd->block_markbad || !mtd->read || !mtd->write ||
+		if (!mtd->_erase ||
+		    !mtd->_block_isbad ||
+		    !mtd->_block_markbad || !mtd->_read || !mtd->_write ||
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 17))
-		    !mtd->read_oob || !mtd->write_oob) {
+		    !mtd->_read_oob || !mtd->_write_oob) {
 #else
-		    !mtd->write_ecc ||
-		    !mtd->read_ecc || !mtd->read_oob || !mtd->write_oob) {
+		    !mtd->_write_ecc ||
+		    !mtd->_read_ecc || !mtd->_read_oob || !mtd->_write_oob) {
 #endif
 			yaffs_trace(YAFFS_TRACE_ALWAYS,
 				"MTD device does not support required functions"
@@ -2747,12 +2754,12 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 		}
 	} else {
 		/* Check for V1 style functions */
-		if (!mtd->erase || !mtd->read || !mtd->write ||
+		if (!mtd->_erase || !mtd->_read || !mtd->_write ||
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 17))
-		    !mtd->read_oob || !mtd->write_oob) {
+		    !mtd->_read_oob || !mtd->_write_oob) {
 #else
-		    !mtd->write_ecc ||
-		    !mtd->read_ecc || !mtd->read_oob || !mtd->write_oob) {
+		    !mtd->_write_ecc ||
+		    !mtd->_read_ecc || !mtd->_read_oob || !mtd->_write_oob) {
 #endif
 			yaffs_trace(YAFFS_TRACE_ALWAYS,
 				"MTD device does not support required functions"
@@ -2956,9 +2963,11 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_read_super: got root inode");
 
-	root = d_alloc_root(inode);
+//	root = d_alloc_root(inode);
+	root = d_make_root(inode);
 
-	yaffs_trace(YAFFS_TRACE_OS, "yaffs_read_super: d_alloc_root done");
+//	yaffs_trace(YAFFS_TRACE_OS, "yaffs_read_super: d_alloc_root done");
+	yaffs_trace(YAFFS_TRACE_OS, "yaffs_read_super: d_make_root done");
 
 	if (!root) {
 		iput(inode);
