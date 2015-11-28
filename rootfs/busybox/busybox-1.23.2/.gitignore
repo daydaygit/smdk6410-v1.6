@@ -1,0 +1,4 @@
+*.o
+*.o.cmd
+*.a.cmd
+*lib.a
