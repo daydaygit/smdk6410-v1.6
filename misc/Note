@@ -1,0 +1,107 @@
+
+
+ busybox
+	1.get source
+	  http://www.busybox.net/
+	  search 1.23.2, then will see "23 March 2015 -- BusyBox 1.23.2 (stable)"
+
+	  if you want to get the newest version software
+	    Via "git clone git://git.busybox.net/busybox" to get it
+	    But it is the newest version that maybe not stable
+
+	  if want to get older, can do like this:
+	    http://www.busybox.net/
+	    --> click: older news
+	     --> http://www.busybox.net/oldnews.html
+
+	2.modify code
+	  Makefile
+	    ARCH & CROSS_COMPILE as:
+	      CROSS_COMPILE ?= /usr/local/arm/4.3.2/bin/arm-linux-
+	      ARCH ?= arm
+
+	3.compile
+	  3.1 make menuconfig
+	      Busybox Settings  --->
+	        Build Options  --->
+	          [*] Build BusyBox as a static binary (no shared libs)			--- 编译成静态库. 少了启动时, 找动态库的麻烦
+		  [*] Build with Large File Support (for accessing files > 2 GB) (NEW)
+		  (/usr/local/arm/4.3.2/bin/arm-linux-) Cross Compiler prefix
+
+	        Busybox Library Tuning  --->
+		  [*] Command line editing
+		  [*]   vi-style line editing commands					---VI 风格的行编辑器命令
+		  [*]   History saving
+		  [*]   Tab completion (NEW)						--- tab缩进功能
+		  [*]     Username completion						--- 用户名补全
+		  [*]   Fancy shell prompts (NEW)					--- 否则挂载rootfs后，无法正常显示命令提示符：“[\u@\h \W]#”
+
+	3.2 make
+	    will generate a file named "busybox"
+
+	3.3 make install
+	    will generate a file named "_install"
+	    busybox-1.23.2/_install$ ll
+	      drwxrwxr-x  bin/
+	      lrwxrwxrwx  linuxrc -> bin/busybox*
+	      drwxrwxr-x  sbin/
+	      drwxrwxr-x  usr/
+
+	3.4 modify _install
+	    cd _install
+	      1.mkdir etc && cd etc
+	        1.1 touch inittab fstab profile
+	        1.2 mkdir init.d && cd init.d && touch rcS && cd -
+
+		cat inittab
+		  ::sysinit:/etc/init.d/rcS
+		  ::askfirst:-/bin/sh
+		  ::restart:/sbin/init
+		  ::ctrlaltdel:/sbin/reboot
+		  ::shutdown:umount-a -r
+
+		cat fstab
+		  #device	mount-point	type	options	dump	fsck	order
+		  proc	/proc	proc	defaults	0	0
+		  sysfs	/sys	sysfs	defaults	0	0
+		  tmpfs	/temp	tmpfs	defaults	0	0
+		  tmpfs	/dev	tmpfs	defaults	0	0
+
+		cat profile
+		  #!/bin/sh
+		  export HOSTNAME=qiuxy
+		  export USER=root
+		  export HOME=root
+		  export PS1="[$USER@$HOSTNAME \W]\#"
+		  PATH=/bin:/sbin:/usr/bin:/usr/sbin
+		  LD_LIBRARY_PATH=/lib:/usr/lib:$LD_LIBRARY_PATH
+		  export PATH LD_LIBRARY_PAT
+
+
+		cat init.d/rcS
+		  mount -a
+		  mkdir /dev/pts
+		  mount -t devpts devpts /dev/pts
+		  echo /sbin/mdev > /proc/sys/kernel/hotplug
+		  mdev -s
+
+	       chmod +x init.d/rcS && ll init.d/rcS
+		 -rwxrwxr-x 1 qiu qiu 95 11月 29 00:09 rcS*
+
+	      2.mkdir mkdir  dev  home temp  proc  sys
+	      3.cd dev
+		sudo mknod  console  c  5  1
+		sudo mknod  null  c  1  3
+		  crw-r--r--  1 root root 5, 1  console
+		  crw-r--r--  1 root root 1, 3  null
+
+	      4.touch .gitignore(empty) into home/proc/sys/temp
+
+ mkyaffs2image
+	from:
+		/media/EXT4_300/CODE/smdk6410/tools_extra/fs/yaffs2/utils/mkyaffs2image
+	do  :
+		busybox-1.23.2$ /media/EXT4_300/CODE/smdk6410_toFixfsMount/smdk6410-v1.6/rootfs/tool/mkyaffs2image/mkyaffs2image _install/   rootfs.yaffs2
+	ll rootfs.yaffs2
+		-rw------- 1 qiu qiu 3784704 11月 29 00:36 rootfs.yaffs2
+
