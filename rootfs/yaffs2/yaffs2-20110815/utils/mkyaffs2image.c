@@ -41,9 +41,24 @@ unsigned yaffs_trace_mask=0;
 #define MAX_OBJECTS 10000
 
 // Adjust these to match your NAND LAYOUT:
-#define chunkSize 2048
-#define spareSize 64
-#define pagesPerBlock 64
+
+#if 1
+  // fl uses this paramters!!!  20151114
+  #define pagesPerBlock                128
+  #define chunkSize                   4096
+  #define spareSize                    128
+#else
+  // my board nand flash: K9 L BG 08 U 0D
+  #define blockPerDevice_noused       8192   /* bolck number per device */
+  #define pagesPerBlock                128   /* page number per block   */
+  #define chunkSize                   4096   /* per page size           */
+  #define spareSize                    218   /* per page oob size       */
+#endif
+
+// K9 G AG 08 U 0D:
+//#define pagesPerBlock              128   /* page number per block   */
+//#define chunkSize                 4096   /* per page size           */
+//#define spareSize                  218   /* per page oob size       */
 
 
 
