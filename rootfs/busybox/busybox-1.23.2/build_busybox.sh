@@ -181,9 +181,9 @@ function edit_etc_profile()
    echo "export HOSTNAME=qiu"							>>  $ETC_FILE/profile
    echo "export USER=root"							>>  $ETC_FILE/profile
    echo "export HOME=root"							>>  $ETC_FILE/profile
-   echo "export PS1="[$USER@$HOSTNAME \W]\#""					>>  $ETC_FILE/profile
+   echo "export PS1=\"[\$USER@\$HOSTNAME \\W]\#\""				>>  $ETC_FILE/profile
    echo "PATH=/bin:/sbin:/usr/bin:/usr/sbin"					>>  $ETC_FILE/profile
-   echo "LD_LIBRARY_PATH=/lib:/usr/lib:$LD_LIBRARY_PATH"			>>  $ETC_FILE/profile
+   echo "LD_LIBRARY_PATH=/lib:/usr/lib:\$LD_LIBRARY_PATH"			>>  $ETC_FILE/profile
    echo "export PATH LD_LIBRARY_PAT"						>>  $ETC_FILE/profile
 }
 
@@ -207,6 +207,7 @@ function edit_other_file()
 {
    mkdir dev  home temp  proc  sys
 
+   echo "because mknod needs sudo permittig. you maybe demand to input sudo password."
    sudo mknod  dev/console c  5  1
    sudo mknod  dev/null    c  1  3
 

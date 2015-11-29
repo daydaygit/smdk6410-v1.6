@@ -1023,6 +1023,10 @@ mrproper: clean archmrproper $(mrproper-dirs)
 PHONY += distclean
 
 distclean: mrproper
+	@echo "======================="
+	@echo "srctree = $(srctree)"
+	@echo "RCS_FIND_IGNORE = $(RCS_FIND_IGNORE)"
+	@echo "======================="
 	@find $(srctree) $(RCS_FIND_IGNORE) \
 		\( -name '*.orig' -o -name '*.rej' -o -name '*~' \
 		-o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
