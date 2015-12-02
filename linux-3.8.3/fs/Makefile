@@ -129,3 +129,4 @@ obj-$(CONFIG_CEPH_FS)		+= ceph/
 obj-$(CONFIG_PSTORE)		+= pstore/
 # obj-$(CONFIG_YAFFS_FS)	+= yaffs2/
 obj-$(CONFIG_YAFFS_YAFFS2_20110815)	+= yaffs2/yaffs2-20110815/
+obj-$(CONFIG_YAFFS_YAFFS2_20150601)	+= yaffs2/yaffs2-20150601/

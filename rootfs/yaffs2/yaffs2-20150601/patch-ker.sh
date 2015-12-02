@@ -99,7 +99,7 @@ fi
 
 KCONFIG=$LINUXDIR/fs/Kconfig
 KCONFIGOLD=$LINUXDIR/fs/Kconfig.pre.yaffs
-YAFFS_PATCHED_STRING=`grep -s yaffs <$KCONFIG | head -n 1`
+YAFFS_PATCHED_STRING=`grep -s yaffs-20150601 <$KCONFIG | head -n 1`
 
 MAKEFILE=$LINUXDIR/fs/Makefile
 MAKEFILEOLD=$LINUXDIR/fs/Makefile.pre.yaffs
@@ -121,7 +121,8 @@ else
     sed -n -e "/[Jj][Ff][Ff][Ss]/,99999 ! p" $KCONFIGOLD >$KCONFIG
     # echo "">>$KCONFIG
     # echo "# Patched by YAFFS" >>$KCONFIG
-    echo "source \"fs/yaffs2/Kconfig\"">>$KCONFIG
+    # echo "source \"fs/yaffs2/Kconfig\"">>$KCONFIG
+    echo "..... need modify nearby .....">>$KCONFIG
     # echo "">>$KCONFIG
     sed -n -e "/[Jj][Ff][Ff][Ss]/,99999 p" $KCONFIGOLD >>$KCONFIG
 
@@ -130,11 +131,11 @@ else
     cp -f $MAKEFILE $MAKEFILEOLD
     # echo "">>$MAKEFILE
     # echo "# Patched by YAFFS" >>$MAKEFILE
-    echo "obj-\$(CONFIG_YAFFS_FS)		+= yaffs2/" >>$MAKEFILE
+    echo "obj-\$(CONFIG_YAFFS_YAFFS2_20150601)	+= yaffs2/yaffs2-20150601/" >>$MAKEFILE
 
 fi
 
-YAFFSDIR=$LINUXDIR/fs/yaffs2
+YAFFSDIR=$LINUXDIR/fs/yaffs2/yaffs2-20150601
 
 if [ -e $YAFFSDIR ]
 then
@@ -143,14 +144,14 @@ then
    echo " eg.  \"rm -rf $YAFFSDIR\" "
 else
    rm yaffs*.mod.c 2> /dev/null
-   mkdir $LINUXDIR/fs/yaffs2
-   $CPY  $PWD/Makefile.kernel $LINUXDIR/fs/yaffs2/Makefile
-   $CPY $PWD/$KCONFIG_SRC $LINUXDIR/fs/yaffs2/Kconfig
-   $CPY $PWD/*.c $PWD/*.h  $LINUXDIR/fs/yaffs2
-   rm $LINUXDIR/fs/yaffs2/yaffs_vfs*.c $LINUXDIR/fs/yaffs2/yaffs_mtdif*.c
-   rm $LINUXDIR/fs/yaffs2/yportenv*.h
-   rm $LINUXDIR/fs/yaffs2/moduleconfig.h
-   $CPY $PWD/$VFS_CODE $LINUXDIR/fs/yaffs2/yaffs_vfs.c
-   $CPY $PWD/$MTD_CODE $LINUXDIR/fs/yaffs2/yaffs_mtdif.c
-   $CPY $PWD/$YPORTENV $LINUXDIR/fs/yaffs2/yportenv.h
+   mkdir -p $LINUXDIR/fs/yaffs2/yaffs2-20150601
+   $CPY  $PWD/Makefile.kernel $LINUXDIR/fs/yaffs2/yaffs2-20150601/Makefile
+   $CPY $PWD/$KCONFIG_SRC $LINUXDIR/fs/yaffs2/yaffs2-20150601/Kconfig
+   $CPY $PWD/*.c $PWD/*.h  $LINUXDIR/fs/yaffs2/yaffs2-20150601
+   rm $LINUXDIR/fs/yaffs2/yaffs2-20150601/yaffs_vfs*.c $LINUXDIR/fs/yaffs2/yaffs2-20150601/yaffs_mtdif*.c
+   rm $LINUXDIR/fs/yaffs2/yaffs2-20150601/yportenv*.h
+   rm $LINUXDIR/fs/yaffs2/yaffs2-20150601/moduleconfig.h
+   $CPY $PWD/$VFS_CODE $LINUXDIR/fs/yaffs2/yaffs2-20150601/yaffs_vfs.c
+   $CPY $PWD/$MTD_CODE $LINUXDIR/fs/yaffs2/yaffs2-20150601/yaffs_mtdif.c
+   $CPY $PWD/$YPORTENV $LINUXDIR/fs/yaffs2/yaffs2-20150601/yportenv.h
 fi

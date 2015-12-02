@@ -79,6 +79,12 @@ config YAFFS_YAFFS2_20110815
 	help
 	  Enable yaffs2 of 2011.08.15 verison
 
+config YAFFS_YAFFS2_20150601
+	bool "Support yaffs2 of 2015.06.01 verison"
+	default n
+	help
+	  Enable yaffs2 of 2015.06.01 verison
+
 config YAFFS_YAFFS2_NEWER
 	bool "Support yaffs2 of newer verison"
 	default n
@@ -241,6 +247,9 @@ source "fs/f2fs/Kconfig"
 
 if YAFFS_YAFFS2_20110815
 source "fs/yaffs2/yaffs2-20110815/Kconfig"
+endif
+if YAFFS_YAFFS2_20150601
+source "fs/yaffs2/yaffs2-20150601/Kconfig"
 endif
 
 endif # MISC_FILESYSTEMS
