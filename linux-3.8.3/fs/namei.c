@@ -2051,6 +2051,9 @@ int kern_path(const char *name, unsigned int flags, struct path *path)
 {
 	struct nameidata nd;
 	int res = do_path_lookup(AT_FDCWD, name, flags, &nd);
+
+	printk("%s ... %s  name=%s, flags=%d, res=%d  +++++++++++++++++++\n",__FILE__,__func__,name,flags,res);
+
 	if (!res)
 		*path = nd.path;
 	return res;

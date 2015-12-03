@@ -27,6 +27,7 @@ static int __initdata mount_initrd = 1;
 
 static int __init no_initrd(char *str)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	mount_initrd = 0;
 	return 1;
 }
@@ -35,6 +36,8 @@ __setup("noinitrd", no_initrd);
 
 static int init_linuxrc(struct subprocess_info *info, struct cred *new)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
+
 	sys_unshare(CLONE_FS | CLONE_FILES);
 	/* stdin/stdout/stderr for /linuxrc */
 	sys_open("/dev/console", O_RDWR, 0);
@@ -53,6 +56,8 @@ static void __init handle_initrd(void)
 	static char *argv[] = { "linuxrc", NULL, };
 	extern char *envp_init[];
 	int error;
+
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 
 	real_root_dev = new_encode_dev(ROOT_DEV);
 	create_dev("/dev/root.old", Root_RAM0);
@@ -111,6 +116,8 @@ static void __init handle_initrd(void)
 
 int __init initrd_load(void)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
+
 	if (mount_initrd) {
 		create_dev("/dev/ram", Root_RAM0);
 		/*

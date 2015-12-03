@@ -86,6 +86,8 @@ static int match_dev_by_uuid(struct device *dev, void *data)
 	struct uuidcmp *cmp = data;
 	struct hd_struct *part = dev_to_part(dev);
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
+
 	if (!part->info)
 		goto no_match;
 
@@ -121,6 +123,9 @@ static dev_t devt_from_partuuid(const char *uuid_str)
 	int offset = 0;
 	bool clear_root_wait = false;
 	char *slash;
+
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
+
 
 	cmp.uuid = uuid_str;
 
@@ -208,6 +213,8 @@ dev_t name_to_dev_t(char *name)
 	char *p;
 	dev_t res = 0;
 	int part;
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
+
 
 #ifdef CONFIG_BLOCK
 	if (strncmp(name, "PARTUUID=", 9) == 0) {
@@ -317,6 +324,7 @@ static int __init fs_names_setup(char *str)
 static unsigned int __initdata root_delay;
 static int __init root_delay_setup(char *str)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	root_delay = simple_strtoul(str, NULL, 0);
 	return 1;
 }
@@ -328,6 +336,7 @@ __setup("rootdelay=", root_delay_setup);
 static void __init get_fs_names(char *page)
 {
 	char *s = page;
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 
 	if (root_fs_names) {
 		strcpy(page, root_fs_names);
@@ -359,6 +368,7 @@ static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 	if (err)
 		return err;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	sys_chdir("/root");
 	s = current->fs->pwd.dentry->d_sb;
 	ROOT_DEV = s->s_dev;
@@ -381,6 +391,7 @@ void __init mount_block_root(char *name, int flags)
 #else
 	const char *b = name;
 #endif
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 
 	get_fs_names(fs_names);
 retry:
@@ -441,6 +452,7 @@ static int __init mount_nfs_root(void)
 	unsigned int timeout;
 	int try, err;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	err = nfs_root_data(&root_dev, &root_data);
 	if (err != 0)
 		return 0;
@@ -478,6 +490,8 @@ void __init change_floppy(char *fmt, ...)
 	int fd;
 	va_list args;
 	va_start(args, fmt);
+
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	vsprintf(buf, fmt, args);
 	va_end(args);
 	fd = sys_open("/dev/root", O_RDWR | O_NDELAY, 0);
@@ -501,6 +515,7 @@ void __init change_floppy(char *fmt, ...)
 
 void __init mount_root(void)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 #ifdef CONFIG_ROOT_NFS
 	if (ROOT_DEV == Root_NFS) {
 		if (mount_nfs_root())
@@ -535,6 +550,7 @@ void __init prepare_namespace(void)
 {
 	int is_floppy;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (root_delay) {
 		printk(KERN_INFO "Waiting %dsec before mounting root device...\n",
 		       root_delay);

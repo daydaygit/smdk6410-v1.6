@@ -19,6 +19,15 @@
  */
 void __init driver_init(void)
 {
+	printk(KERN_INFO "%s, devtmpfs_init\n", __FILE__);
+	printk(KERN_INFO "%s, devices_init\n", __FILE__);
+	printk(KERN_INFO "%s, buses_init\n", __FILE__);
+	printk(KERN_INFO "%s, classes_init\n", __FILE__);
+	printk(KERN_INFO "%s, firmware_init\n", __FILE__);
+	printk(KERN_INFO "%s, hypervisor_init\n", __FILE__);
+	printk(KERN_INFO "%s, platform_bus_init\n", __FILE__);
+	printk(KERN_INFO "%s, cpu_dev_init\n", __FILE__);
+	printk(KERN_INFO "%s, memory_dev_init\n", __FILE__);
 	/* These are the core pieces */
 	devtmpfs_init();
 	devices_init();

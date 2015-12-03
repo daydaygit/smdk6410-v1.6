@@ -615,6 +615,7 @@ static inline int check_mnt(struct mount *mnt)
  */
 static void touch_mnt_namespace(struct mnt_namespace *ns)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (ns) {
 		ns->event = ++event;
 		wake_up_interruptible(&ns->poll);
@@ -658,6 +659,7 @@ static void dentry_reset_mounted(struct dentry *dentry)
  */
 static void detach_mnt(struct mount *mnt, struct path *old_path)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	old_path->dentry = mnt->mnt_mountpoint;
 	old_path->mnt = &mnt->mnt_parent->mnt;
 	mnt->mnt_parent = mnt;
@@ -673,6 +675,7 @@ static void detach_mnt(struct mount *mnt, struct path *old_path)
 void mnt_set_mountpoint(struct mount *mnt, struct dentry *dentry,
 			struct mount *child_mnt)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	mnt_add_count(mnt, 1);	/* essentially, that's mntget */
 	child_mnt->mnt_mountpoint = dget(dentry);
 	child_mnt->mnt_parent = mnt;
@@ -686,6 +689,7 @@ void mnt_set_mountpoint(struct mount *mnt, struct dentry *dentry,
  */
 static void attach_mnt(struct mount *mnt, struct path *path)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	mnt_set_mountpoint(real_mount(path->mnt), path->dentry, mnt);
 	list_add_tail(&mnt->mnt_hash, mount_hashtable +
 			hash(path->mnt, path->dentry));
@@ -702,6 +706,7 @@ static void commit_tree(struct mount *mnt)
 	LIST_HEAD(head);
 	struct mnt_namespace *n = parent->mnt_ns;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	BUG_ON(parent == mnt);
 
 	list_add_tail(&head, &mnt->mnt_list);
@@ -748,6 +753,7 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 	struct mount *mnt;
 	struct dentry *root;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (!type)
 		return ERR_PTR(-ENODEV);
 
@@ -1531,6 +1537,7 @@ static int attach_recursive_mnt(struct mount *source_mnt,
 	struct mount *child, *p;
 	int err;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (IS_MNT_SHARED(dest_mnt)) {
 		err = invent_group_ids(source_mnt, true);
 		if (err)
@@ -1599,6 +1606,7 @@ static void unlock_mount(struct path *path)
 
 static int graft_tree(struct mount *mnt, struct path *path)
 {
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (mnt->mnt.mnt_sb->s_flags & MS_NOUSER)
 		return -EINVAL;
 
@@ -1897,6 +1905,7 @@ static struct vfsmount *fs_set_subtype(struct vfsmount *mnt, const char *fstype)
 static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
 {
 	int err;
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 
 	mnt_flags &= ~(MNT_SHARED | MNT_WRITE_HOLD | MNT_INTERNAL);
 
@@ -1944,6 +1953,7 @@ static int do_new_mount(struct path *path, const char *fstype, int flags,
 	struct vfsmount *mnt;
 	int err;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	if (!fstype)
 		return -EINVAL;
 
@@ -2241,6 +2251,7 @@ long do_mount(const char *dev_name, const char *dir_name,
 	int retval = 0;
 	int mnt_flags = 0;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	/* Discard magic */
 	if ((flags & MS_MGC_MSK) == MS_MGC_VAL)
 		flags &= ~MS_MGC_MSK;
@@ -2483,6 +2494,7 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
 	char *kernel_dev;
 	unsigned long data_page;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	ret = copy_mount_string(type, &kernel_type);
 	if (ret < 0)
 		goto out_type;
@@ -2683,6 +2695,7 @@ void __init mnt_init(void)
 	unsigned u;
 	int err;
 
+	printk("%s ... %s +++++++++++++++++++\n",__FILE__,__func__);
 	init_rwsem(&namespace_sem);
 
 	mnt_cache = kmem_cache_create("mnt_cache", sizeof(struct mount),

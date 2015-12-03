@@ -118,6 +118,7 @@ int devtmpfs_delete_node(struct device *dev)
 	const char *tmp = NULL;
 	struct req req;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if (!thread)
 		return 0;
 
@@ -148,6 +149,7 @@ static int dev_mkdir(const char *name, umode_t mode)
 	struct path path;
 	int err;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	dentry = kern_path_create(AT_FDCWD, name, &path, LOOKUP_DIRECTORY);
 	if (IS_ERR(dentry))
 		return PTR_ERR(dentry);
@@ -166,6 +168,7 @@ static int create_path(const char *nodepath)
 	char *s;
 	int err = 0;
 
+	printk(KERN_INFO "%s, %s, *nodepath=%s\n", __FILE__,__func__, nodepath);
 	/* parent directories do not exist, create them */
 	path = kstrdup(nodepath, GFP_KERNEL);
 	if (!path)
@@ -296,6 +299,7 @@ static int handle_remove(const char *nodename, struct device *dev)
 	int deleted = 1;
 	int err;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	dentry = kern_path_locked(nodename, &parent);
 	if (IS_ERR(dentry))
 		return PTR_ERR(dentry);
@@ -341,6 +345,7 @@ int devtmpfs_mount(const char *mntdir)
 {
 	int err;
 
+	printk(KERN_INFO "%s, %s ++++++++++++++++\n", __FILE__,__func__);
 	if (!mount_dev)
 		return 0;
 
@@ -349,9 +354,9 @@ int devtmpfs_mount(const char *mntdir)
 
 	err = sys_mount("devtmpfs", (char *)mntdir, "devtmpfs", MS_SILENT, NULL);
 	if (err)
-		printk(KERN_INFO "devtmpfs: error mounting %i\n", err);
+		printk(KERN_INFO "devtmpfs: error mounting %i +++++++++\n", err);
 	else
-		printk(KERN_INFO "devtmpfs: mounted\n");
+		printk(KERN_INFO "devtmpfs: mounted +++++++++\n");
 	return err;
 }
 
@@ -370,6 +375,8 @@ static int devtmpfsd(void *p)
 	char options[] = "mode=0755";
 	int *err = p;
 	*err = sys_unshare(CLONE_NEWNS);
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
+
 	if (*err)
 		goto out;
 	*err = sys_mount("devtmpfs", "/", "devtmpfs", MS_SILENT, options);
@@ -415,6 +422,7 @@ int __init devtmpfs_init(void)
 		return err;
 	}
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	thread = kthread_run(devtmpfsd, &err, "kdevtmpfs");
 	if (!IS_ERR(thread)) {
 		wait_for_completion(&setup_done);

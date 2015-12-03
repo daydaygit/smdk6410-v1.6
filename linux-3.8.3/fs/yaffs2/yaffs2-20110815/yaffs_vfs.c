@@ -549,6 +549,7 @@ struct dentry *yaffs2_get_parent(struct dentry *dentry)
 	struct yaffs_obj *d_obj;
 	struct yaffs_obj *parent_obj;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	d_obj = yaffs_inode_to_obj(dentry->d_inode);
 
 	if (d_obj) {
@@ -785,6 +786,7 @@ static struct dentry *yaffs_lookup(struct inode *dir, struct dentry *dentry)
 
 	struct yaffs_dev *dev = yaffs_inode_to_obj(dir)->my_dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if (current != yaffs_dev_to_lc(dev)->readdir_process)
 		yaffs_gross_lock(dev);
 
@@ -858,6 +860,7 @@ static void yaffs_evict_inode(struct inode *inode)
 
 	obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_evict_inode: ino %d, count %d %s",
 		(int)inode->i_ino, atomic_read(&inode->i_count),
@@ -898,6 +901,7 @@ static void yaffs_clear_inode(struct inode *inode)
 
 	obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_clear_inode: ino %d, count %d %s",
 		(int)inode->i_ino, atomic_read(&inode->i_count),
@@ -922,6 +926,7 @@ static void yaffs_delete_inode(struct inode *inode)
 	struct yaffs_obj *obj = yaffs_inode_to_obj(inode);
 	struct yaffs_dev *dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_delete_inode: ino %d, count %d %s",
 		(int)inode->i_ino, atomic_read(&inode->i_count),
@@ -950,6 +955,7 @@ static int yaffs_file_flush(struct file *file)
 
 	struct yaffs_dev *dev = obj->my_dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_file_flush object %d (%s)",
 		obj->obj_id,
@@ -1053,6 +1059,7 @@ static int yaffs_writepage(struct page *page)
 	unsigned n_bytes;
 	loff_t i_size;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if (!mapping)
 		BUG();
 	inode = mapping->host;
@@ -1132,6 +1139,7 @@ static int yaffs_write_begin(struct file *filp, struct address_space *mapping,
 	int ret = 0;
 	int space_held = 0;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	/* Get a page */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 28)
 	pg = grab_cache_page_write_begin(mapping, index, flags);
@@ -1203,6 +1211,7 @@ static int yaffs_write_end(struct file *filp, struct address_space *mapping,
 	void *addr, *kva;
 	uint32_t offset_into_page = pos & (PAGE_CACHE_SIZE - 1);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	kva = kmap(pg);
 	addr = kva + offset_into_page;
 
@@ -1240,6 +1249,7 @@ static int yaffs_commit_write(struct file *f, struct page *pg, unsigned offset,
 	unsigned spos = pos;
 	unsigned saddr;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	kva = kmap(pg);
 	addr = kva + offset;
 
@@ -1270,6 +1280,7 @@ static int yaffs_commit_write(struct file *f, struct page *pg, unsigned offset,
 static void yaffs_fill_inode_from_obj(struct inode *inode,
 				      struct yaffs_obj *obj)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if (inode && obj) {
 
 		/* Check mode against the variant type and attempt to repair if broken. */
@@ -1379,6 +1390,7 @@ struct inode *yaffs_get_inode(struct super_block *sb, int mode, int dev,
 {
 	struct inode *inode;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if (!sb) {
 		yaffs_trace(YAFFS_TRACE_OS,
 			"yaffs_get_inode for NULL super_block!!");
@@ -1415,6 +1427,7 @@ static ssize_t yaffs_file_write(struct file *f, const char *buf, size_t n,
 	struct inode *inode;
 	struct yaffs_dev *dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	obj = yaffs_dentry_to_obj(f->f_dentry);
 
 	if (!obj) {
@@ -1513,6 +1526,7 @@ static int yaffs_readdir(struct file *f, void *dirent, filldir_t filldir)
 
 	char name[YAFFS_MAX_NAME_LENGTH + 1];
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	obj = yaffs_dentry_to_obj(f->f_dentry);
 	dev = obj->my_dev;
 
@@ -1638,6 +1652,7 @@ static int yaffs_mknod(struct inode *dir, struct dentry *dentry, int mode,
 	gid_t gid =
 	    (dir->i_mode & S_ISGID) ? dir->i_gid : YCRED(current)->fsgid;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	if ((dir->i_mode & S_ISGID) && S_ISDIR(mode))
 		mode |= S_ISGID;
 
@@ -1735,6 +1750,7 @@ static int yaffs_unlink(struct inode *dir, struct dentry *dentry)
 	struct yaffs_dev *dev;
 	struct yaffs_obj *obj;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_unlink %d:%s",
 		(int)(dir->i_ino), dentry->d_name.name);
 	obj = yaffs_inode_to_obj(dir);
@@ -1767,6 +1783,7 @@ static int yaffs_link(struct dentry *old_dentry, struct inode *dir,
 	struct yaffs_obj *link = NULL;
 	struct yaffs_dev *dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_link");
 
 	obj = yaffs_inode_to_obj(inode);
@@ -1808,6 +1825,7 @@ static int yaffs_symlink(struct inode *dir, struct dentry *dentry,
 	gid_t gid =
 	    (dir->i_mode & S_ISGID) ? dir->i_gid : YCRED(current)->fsgid;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_symlink");
 
 	dev = yaffs_inode_to_obj(dir)->my_dev;
@@ -1847,6 +1865,7 @@ static int yaffs_sync_object(struct file *file, struct dentry *dentry,
 	struct dentry *dentry = file->f_path.dentry;
 #endif
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	obj = yaffs_dentry_to_obj(dentry);
 
 	dev = obj->my_dev;
@@ -1871,6 +1890,7 @@ static int yaffs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	int ret_val = YAFFS_FAIL;
 	struct yaffs_obj *target;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_rename");
 	dev = yaffs_inode_to_obj(old_dir)->my_dev;
 
@@ -1918,6 +1938,7 @@ static int yaffs_setattr(struct dentry *dentry, struct iattr *attr)
 	int error = 0;
 	struct yaffs_dev *dev;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_setattr of object %d",
 		yaffs_inode_to_obj(inode)->obj_id);
@@ -1969,6 +1990,7 @@ static int yaffs_setxattr(struct dentry *dentry, const char *name,
 	struct yaffs_dev *dev;
 	struct yaffs_obj *obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_setxattr of object %d", obj->obj_id);
 
 	if (error == 0) {
@@ -1996,6 +2018,7 @@ static ssize_t yaffs_getxattr(struct dentry * dentry, const char *name,
 	struct yaffs_dev *dev;
 	struct yaffs_obj *obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_getxattr \"%s\" from object %d",
 		name, obj->obj_id);
@@ -2019,6 +2042,7 @@ static int yaffs_removexattr(struct dentry *dentry, const char *name)
 	struct yaffs_dev *dev;
 	struct yaffs_obj *obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_removexattr of object %d", obj->obj_id);
 
@@ -2047,6 +2071,7 @@ static ssize_t yaffs_listxattr(struct dentry * dentry, char *buff, size_t size)
 	struct yaffs_dev *dev;
 	struct yaffs_obj *obj = yaffs_inode_to_obj(inode);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_listxattr of object %d", obj->obj_id);
 
@@ -2079,6 +2104,7 @@ static int yaffs_statfs(struct super_block *sb, struct statfs *buf)
 	struct yaffs_dev *dev = yaffs_super_to_dev(sb);
 #endif
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_statfs");
 
 	yaffs_gross_lock(dev);
@@ -2142,6 +2168,7 @@ static void yaffs_flush_inodes(struct super_block *sb)
 	struct inode *iptr;
 	struct yaffs_obj *obj;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	list_for_each_entry(iptr, &sb->s_inodes, i_sb_list) {
 		obj = yaffs_inode_to_obj(iptr);
 		if (obj) {
@@ -2196,6 +2223,7 @@ static int yaffs_do_sync_fs(struct super_block *sb, int request_checkpoint)
 	unsigned gc_urgent = yaffs_bg_gc_urgency(dev);
 	int do_checkpoint;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS | YAFFS_TRACE_SYNC | YAFFS_TRACE_BACKGROUND,
 		"yaffs_do_sync_fs: gc-urgency %d %s %s%s",
 		gc_urgent,
@@ -2250,6 +2278,7 @@ static int yaffs_bg_thread_fn(void *data)
 	int gc_result;
 	struct timer_list timer;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_BACKGROUND,
 		"yaffs_background starting for dev %p", (void *)dev);
 
@@ -2394,6 +2423,7 @@ static int yaffs_sync_fs(struct super_block *sb)
 {
 	unsigned request_checkpoint = (yaffs_auto_checkpoint >= 1);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS | YAFFS_TRACE_SYNC,
 		"yaffs_sync_fs%s", request_checkpoint ? " checkpt" : "");
 
@@ -2410,6 +2440,7 @@ static struct inode *yaffs_iget(struct super_block *sb, unsigned long ino)
 	struct yaffs_obj *obj;
 	struct yaffs_dev *dev = yaffs_super_to_dev(sb);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_iget for %lu", ino);
 
 	inode = iget_locked(sb, ino);
@@ -2447,6 +2478,7 @@ static void yaffs_read_inode(struct inode *inode)
 	struct yaffs_obj *obj;
 	struct yaffs_dev *dev = yaffs_super_to_dev(inode->i_sb);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS,
 		"yaffs_read_inode for %d", (int)inode->i_ino);
 
@@ -2470,6 +2502,7 @@ static void yaffs_put_super(struct super_block *sb)
 {
 	struct yaffs_dev *dev = yaffs_super_to_dev(sb);
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_OS, "yaffs_put_super");
 
 	yaffs_trace(YAFFS_TRACE_OS | YAFFS_TRACE_BACKGROUND,
@@ -2505,6 +2538,7 @@ static void yaffs_mtd_put_super(struct super_block *sb)
 {
 	struct mtd_info *mtd = yaffs_dev_to_mtd(yaffs_super_to_dev(sb));
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 /*
 	if (mtd->sync)
 		mtd->sync(mtd);
@@ -2546,6 +2580,7 @@ static int yaffs_parse_options(struct yaffs_options *options,
 	int p;
 	int error = 0;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	/* Parse through the options which is a comma seperated list */
 
 	while (options_str && *options_str && !error) {
@@ -2632,6 +2667,8 @@ static struct super_block *yaffs_internal_read_super(int yaffs_version,
 		printk(KERN_INFO "yaffs: sb is NULL\n");
 		return NULL;
         }
+
+	printk(KERN_INFO "yaffs_internal_read_super() ++++++++++++++++++++++++\n");
 
 	sb->s_magic = YAFFS_MAGIC;
 	sb->s_op = &yaffs_super_ops;
@@ -3031,6 +3068,7 @@ static struct file_system_type yaffs_fs_type = {
 static struct super_block *yaffs_read_super(struct super_block *sb, void *data,
 					    int silent)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	return yaffs_internal_read_super(1, sb, data, silent);
 }
 
@@ -3043,6 +3081,7 @@ static DECLARE_FSTYPE(yaffs_fs_type, "yaffs", yaffs_read_super,
 static int yaffs2_internal_read_super_mtd(struct super_block *sb, void *data,
 					  int silent)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	return yaffs_internal_read_super(2, sb, data, silent) ? 0 : -EINVAL;
 }
 
@@ -3050,6 +3089,7 @@ static int yaffs2_internal_read_super_mtd(struct super_block *sb, void *data,
 static struct dentry *yaffs2_mount(struct file_system_type *fs_type, int flags,
         const char *dev_name, void *data)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
         return mount_bdev(fs_type, flags, dev_name, data, yaffs2_internal_read_super_mtd);
 }
 #elif (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 17))
@@ -3086,6 +3126,7 @@ static struct file_system_type yaffs2_fs_type = {
 static struct super_block *yaffs2_read_super(struct super_block *sb,
 					     void *data, int silent)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	return yaffs_internal_read_super(2, sb, data, silent);
 }
 
@@ -3100,6 +3141,7 @@ static char *yaffs_dump_dev_part0(char *buf, struct yaffs_dev *dev)
 {
 	struct yaffs_param *param = &dev->param;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	buf += sprintf(buf, "start_block.......... %d\n", param->start_block);
 	buf += sprintf(buf, "end_block............ %d\n", param->end_block);
 	buf += sprintf(buf, "total_bytes_per_chunk %d\n",
@@ -3126,6 +3168,7 @@ static char *yaffs_dump_dev_part0(char *buf, struct yaffs_dev *dev)
 
 static char *yaffs_dump_dev_part1(char *buf, struct yaffs_dev *dev)
 {
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	buf += sprintf(buf, "data_bytes_per_chunk. %d\n",
 				dev->data_bytes_per_chunk);
 	buf += sprintf(buf, "chunk_grp_bits....... %d\n", dev->chunk_grp_bits);
@@ -3186,6 +3229,7 @@ static int yaffs_proc_read(char *page,
 	 * enough to hold the complete output; but that's life in /proc.
 	 */
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	*(int *)start = 1;
 
 	/* Print header first */
@@ -3284,6 +3328,7 @@ static int yaffs_proc_write_trace_options(struct file *file, const char *buf,
 	int add, len = 0;
 	int pos = 0;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	rg = yaffs_trace_mask;
 
 	while (!done && (pos < count)) {
@@ -3390,6 +3435,7 @@ static int __init init_yaffs_fs(void)
 	int error = 0;
 	struct file_system_to_install *fsinst;
 
+	printk(KERN_INFO "%s, %s\n", __FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_ALWAYS,
 		"yaffs built " __DATE__ " " __TIME__ " Installing.");
 
