@@ -121,6 +121,8 @@ function handle_config_array()
          fi
       fi
    done
+
+   rm -f $OBJOLD
 }
 
 function modify_some_configuration()
@@ -207,10 +209,11 @@ function edit_other_file()
 {
    mkdir dev  home temp  proc  sys
 
-   echo "because mknod needs sudo permittig. you maybe demand to input sudo password."
+   echo "because mknod needs sudo permitting. you maybe demand to input sudo password."
    sudo mknod  dev/console c  5  1
    sudo mknod  dev/null    c  1  3
 
+   echo "" >  dev/.gitignore
    echo "" > home/.gitignore
    echo "" > temp/.gitignore
    echo "" > proc/.gitignore
@@ -239,7 +242,10 @@ function execute_proper_business()
    if [ ! -f $objfile ]; then
       echo -e "Please execute the command \"make menuconfig\", then run this script"
       echo -e "you can do like this:"
-      echo -e "\t1.make menuconfig;\n\t2.EXIT Configuration by doing nothing BUT save the new configuration."
+      echo -e "\t1. make distclean"
+      echo -e "\t2. make menuconfig"
+      echo -e "\t3. EXIT Configuration by doing nothing BUT save the new configuration."
+      echo -e "\t4. ./build_busybox.sh"
       exit
    else
       modify_some_configuration
