@@ -80,6 +80,7 @@ static 	int yaffs_mtd_write(struct yaffs_dev *dev, int nand_chunk,
 	struct mtd_oob_ops ops;
 	int retval;
 
+	printk("%s ... %s\n",__FILE__,__func__);
 	yaffs_trace(YAFFS_TRACE_MTD,
 			"yaffs_mtd_write(%p, %d, %p, %d, %p, %d)\n",
 			dev, nand_chunk, data, data_len, oob, oob_len);
@@ -121,6 +122,7 @@ static int yaffs_mtd_read(struct yaffs_dev *dev, int nand_chunk,
 	struct mtd_oob_ops ops;
 	int retval;
 
+//	printk("%s ... %s\n",__FILE__,__func__);
 	addr = ((loff_t) nand_chunk) * dev->param.total_bytes_per_chunk;
 	memset(&ops, 0, sizeof(ops));
 	ops.mode = MTD_OPS_AUTO_OOB;
@@ -179,6 +181,7 @@ static 	int yaffs_mtd_erase(struct yaffs_dev *dev, int block_no)
 	int retval = 0;
 	u32 block_size;
 
+	printk("%s ... %s\n",__FILE__,__func__);
 	block_size = dev->param.total_bytes_per_chunk *
 		     dev->param.chunks_per_block;
 	addr = ((loff_t) block_no) * block_size;
@@ -252,6 +255,7 @@ struct mtd_info * yaffs_get_mtd_device(dev_t sdev)
 {
 	struct mtd_info *mtd;
 
+	printk("%s ... %s\n",__FILE__,__func__);
 	mtd = yaffs_get_mtd_device(sdev);
 
 	/* Check it's an mtd device..... */

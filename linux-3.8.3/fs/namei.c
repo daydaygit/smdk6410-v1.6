@@ -581,6 +581,8 @@ static int complete_walk(struct nameidata *nd)
 	struct dentry *dentry = nd->path.dentry;
 	int status;
 
+//	printk("%s ... %s\n",__FILE__,__func__);
+
 	if (nd->flags & LOOKUP_RCU) {
 		nd->flags &= ~LOOKUP_RCU;
 		if (!(nd->flags & LOOKUP_ROOT))
@@ -614,6 +616,7 @@ static int complete_walk(struct nameidata *nd)
 	if (!status)
 		status = -ESTALE;
 
+	printk("%s status=%d\n",__func__,status);
 	path_put(&nd->path);
 	return status;
 }
@@ -1942,6 +1945,8 @@ static int path_lookupat(int dfd, const char *name,
 	struct path path;
 	int err;
 
+//	printk("%s ... %s dfd=%d, name=%s, flags=%d++++\n",__FILE__,__func__, dfd, name, flags);
+
 	/*
 	 * Path walking is largely split up into 2 different synchronisation
 	 * schemes, rcu-walk and ref-walk (explained in
@@ -1963,6 +1968,8 @@ static int path_lookupat(int dfd, const char *name,
 
 	current->total_link_count = 0;
 	err = link_path_walk(name, nd);
+	if(err)
+		printk("%s err=%d  %d", __func__, err, __LINE__);
 
 	if (!err && !(flags & LOOKUP_PARENT)) {
 		err = lookup_last(nd, &path);
@@ -1983,6 +1990,8 @@ static int path_lookupat(int dfd, const char *name,
 
 	if (!err)
 		err = complete_walk(nd);
+	else
+		printk("%s err=%d  %d\n",__func__, err, __LINE__);
 
 	if (!err && nd->flags & LOOKUP_DIRECTORY) {
 		if (!nd->inode->i_op->lookup) {
@@ -1998,12 +2007,14 @@ static int path_lookupat(int dfd, const char *name,
 		path_put(&nd->root);
 		nd->root.mnt = NULL;
 	}
+//	printk("%s err=%d\n",__func__,err);
 	return err;
 }
 
 static int filename_lookup(int dfd, struct filename *name,
 				unsigned int flags, struct nameidata *nd)
 {
+//	printk("%s ... %s dfd=%d, name=%s, flags=%d++++\n",__FILE__,__func__, dfd, name, flags);
 	int retval = path_lookupat(dfd, name->name, flags | LOOKUP_RCU, nd);
 	if (unlikely(retval == -ECHILD))
 		retval = path_lookupat(dfd, name->name, flags, nd);
