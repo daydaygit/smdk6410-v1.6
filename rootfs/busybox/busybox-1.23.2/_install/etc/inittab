@@ -2,4 +2,4 @@
 ::askfirst:-/bin/sh
 ::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
-::shutdown:umount-a -r
+::shutdown:umount -a -r

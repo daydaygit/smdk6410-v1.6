@@ -161,7 +161,7 @@ function edit_etc_inittab()
    echo "::askfirst:-/bin/sh"							>>  $ETC_FILE/inittab
    echo "::restart:/sbin/init"							>>  $ETC_FILE/inittab
    echo "::ctrlaltdel:/sbin/reboot"						>>  $ETC_FILE/inittab
-   echo "::shutdown:umount-a -r"						>>  $ETC_FILE/inittab
+   echo "::shutdown:umount -a -r"						>>  $ETC_FILE/inittab
 }
 
 function edit_etc_fstab()
@@ -207,11 +207,13 @@ function edit_etc_initd_rcS()
 
 function edit_other_file()
 {
-   mkdir dev  home temp  proc  sys
+   mkdir dev  home temp  proc  sys lib
 
    echo "because mknod needs sudo permitting. you maybe demand to input sudo password."
    sudo mknod  dev/console c  5  1
    sudo mknod  dev/null    c  1  3
+
+   sudo cp /usr/local/arm/4.3.2/arm-none-linux-gnueabi/libc/lib/*so*  lib/
 
    echo "" >  dev/.gitignore
    echo "" > home/.gitignore
