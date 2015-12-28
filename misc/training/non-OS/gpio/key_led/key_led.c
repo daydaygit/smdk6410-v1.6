@@ -22,7 +22,6 @@
 
 int main(void)
 {
-	unsigned char i = 0;
 	unsigned char key = 0;
 
 	/* init led related register(GPMCON, GPMDAT) */
