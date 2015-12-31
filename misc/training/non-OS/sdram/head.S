@@ -3,8 +3,9 @@
 @ func：set SDRAM，copy code to SDRAM，then jump to SDRAM & 继续执行
 @************************************************************************* 
 
-.equ        MEM_CTL_BASE,       0x48000000	@ BWSCON: 0x48000000
-.equ        SDRAM_BASE,         0x30000000
+.equ	S3C2410_SPEC_REGS_BASE,	0x48000000	@ BWSCON: 0x48000000  P55,P206
+.equ	SDRAM_BASE,         0x30000000
+
 
 .text
 .global _start
@@ -26,19 +27,20 @@ peri_port_setup:
     mov pc, lr
 
 disable_watch_dog:
-    @mov r1,     #0x7e004000		@ Error: invalid constant (7e004000) after fixup
+    @mov r1, #0x7e004000		@ Error: invalid constant (7e004000) after fixup
 					@ 用mov的话只要立即数大于0x100后有些数可以编译通过但是有些数就不能编译通过
-    @mov r2,     #0x0
-    @str r2,     [r1]
-    @mov pc,     lr
-    ldr     r0, =0x7e000000
-    orr     r0, r0, #0x4000		@ WTCON: 0x7e004000
-    mov     r1, #0x0			@ just only need write 0 to wdog register
-    str     r1, [r0]
+    @mov r2, #0x0
+    @str r2, [r1]
+    @mov pc, lr
+    ldr r0, =0x7e000000
+    orr r0, r0, #0x4000			@ WTCON: 0x7e004000
+    mov r1, #0x0			@ just only need write 0 to wdog register
+    str r1, [r0]
+    mov pc. lr
 
 memsetup:
 					@ 设置存储控制器以便使用SDRAM等外设
-    mov  r1, #MEM_CTL_BASE		@ 存储控制器的13个寄存器的开始地址
+    mov  r1, #S3C2410_SPEC_REGS_BASE	@ 存储控制器的13个寄存器的开始地址
     adrl r2, mem_cfg_val		@ 这13个值的起始存储地址
     add  r3, r1, #52			@ 13*4 = 54
 1:
